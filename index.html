@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>骑开得胜 - 骑手申诉辅助工具</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <span class="time" id="clock">09:41</span>
+            <div class="icons">
+                <span>📶</span>
+                <span>WiFi</span>
+                <span>🔋</span>
+            </div>
+        </div>
+
+        <!-- 页面头部（动态显示） -->
+        <div class="page-header" id="pageHeader" style="display: none;">
+            <div class="back-btn" id="backBtn">←</div>
+            <div class="title" id="pageTitle">首页</div>
+            <div class="right-action" id="rightAction"></div>
+        </div>
+
+        <!-- 页面容器 -->
+        <main class="page-content-area" id="pageContainer">
+            <!-- 1. 首页 -->
+            <section class="page active" id="page-home">
+                <div class="home-header">
+                    <div class="brand">
+                        <div class="brand-icon">🛵</div>
+                        <span>骑开得胜</span>
+                    </div>
+                    <p class="slogan">让骑手看得懂规则、写得了申诉、留得下证据</p>
+                    <h1 class="slogan-main">外卖骑手<br>算法规则解读与申诉辅助工具</h1>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-num">12</div>
+                            <div class="stat-label">覆盖规则</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num">36</div>
+                            <div class="stat-label">典型案例</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num">4</div>
+                            <div class="stat-label">申诉场景</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="quick-action-card primary" onclick="navigateTo('problem')">
+                        <div class="icon">✍️</div>
+                        <div class="label">我要申诉</div>
+                        <div class="desc">一键生成申诉初稿</div>
+                    </div>
+                    <div class="quick-action-card secondary" onclick="navigateTo('library', {tab:'rules'})">
+                        <div class="icon">📋</div>
+                        <div class="label">查规则</div>
+                        <div class="desc">规则原文大白话</div>
+                    </div>
+                    <div class="quick-action-card tertiary" onclick="navigateTo('library', {tab:'cases'})">
+                        <div class="icon">📚</div>
+                        <div class="label">看案例</div>
+                        <div class="desc">参考成功案例</div>
+                    </div>
+                </div>
+
+                <div class="page-content">
+                    <div class="card">
+                        <div class="card-title">🔥 常见申诉场景</div>
+                        <div class="card-subtitle">选择与你遇到的问题最匹配的类型，开始准备申诉材料。</div>
+                        <div class="problem-grid" style="margin-top: 12px;">
+                            <div class="problem-item" onclick="selectProblem('navigation')">
+                                <div class="icon" style="background: #eff6ff;">🧭</div>
+                                <div class="info">
+                                    <h3>导航或定位异常</h3>
+                                    <p>定位偏差、路线规划错误导致配送异常</p>
+                                </div>
+                                <div class="arrow">›</div>
+                            </div>
+                            <div class="problem-item" onclick="selectProblem('merchant')">
+                                <div class="icon" style="background: #fff3e0;">🍜</div>
+                                <div class="info">
+                                    <h3>商家出餐延误</h3>
+                                    <p>商家未按时出餐导致订单超时</p>
+                                </div>
+                                <div class="arrow">›</div>
+                            </div>
+                            <div class="problem-item" onclick="selectProblem('time')">
+                                <div class="icon" style="background: #f3e8ff;">⏱️</div>
+                                <div class="info">
+                                    <h3>配送时间争议</h3>
+                                    <p>系统判定超时但存在客观原因</p>
+                                </div>
+                                <div class="arrow">›</div>
+                            </div>
+                            <div class="problem-item" onclick="selectProblem('income')">
+                                <div class="icon" style="background: #ecfdf5;">💰</div>
+                                <div class="info">
+                                    <h3>收入计价争议</h3>
+                                    <p>配送费、奖励、扣款存在疑问</p>
+                                </div>
+                                <div class="arrow">›</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">⚡ 使用流程</div>
+                        <div class="progress-bar" style="margin-top: 16px; margin-bottom: 0;">
+                            <div class="progress-step active">
+                                <div class="dot">1</div>
+                                <div class="label">选问题</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="dot">2</div>
+                                <div class="label">填情况</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="dot">3</div>
+                                <div class="label">看规则</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="dot">4</div>
+                                <div class="label">备证据</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="dot">5</div>
+                                <div class="label">出初稿</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 问题选择 -->
+            <section class="page" id="page-problem">
+                <div class="page-content">
+                    <div class="tip-box">
+                        请选择与你当前遇到的问题最匹配的类型，系统将为你匹配对应的规则和申诉模板。
+                    </div>
+
+                    <div class="problem-grid">
+                        <div class="problem-item" onclick="selectProblem('navigation')">
+                            <div class="icon" style="background: #eff6ff;">🧭</div>
+                            <div class="info">
+                                <h3>导航或定位异常</h3>
+                                <p>平台导航定位错误、路线规划不合理，导致实际配送距离与时间超出系统预估。</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="problem-item" onclick="selectProblem('merchant')">
+                            <div class="icon" style="background: #fff3e0;">🍜</div>
+                            <div class="info">
+                                <h3>商家出餐延误</h3>
+                                <p>商家未在系统预计时间内完成出餐，导致骑手等待时间过长、订单最终超时。</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="problem-item" onclick="selectProblem('time')">
+                            <div class="icon" style="background: #f3e8ff;">⏱️</div>
+                            <div class="info">
+                                <h3>配送时间争议</h3>
+                                <p>因天气、交通管制、电梯故障等客观因素，系统仍按常规标准判定配送超时。</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="problem-item" onclick="selectProblem('income')">
+                            <div class="icon" style="background: #ecfdf5;">💰</div>
+                            <div class="info">
+                                <h3>收入计价争议</h3>
+                                <p>配送费计算、活动奖励发放、违规扣款等与平台公示规则不一致。</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 情况填写 -->
+            <section class="page" id="page-form">
+                <div class="page-content">
+                    <div class="progress-bar">
+                        <div class="progress-step active"><div class="dot">1</div><div class="label">选问题</div></div>
+                        <div class="progress-step active"><div class="dot">2</div><div class="label">填情况</div></div>
+                        <div class="progress-step"><div class="dot">3</div><div class="label">看规则</div></div>
+                        <div class="progress-step"><div class="dot">4</div><div class="label">备证据</div></div>
+                        <div class="progress-step"><div class="dot">5</div><div class="label">出初稿</div></div>
+                    </div>
+
+                    <div class="tip-box" id="formTip">
+                        请根据实际情况填写事件信息，演示环境下数据仅在本地展示，不会上传。
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📝 事件信息</div>
+                        <div class="form-group">
+                            <label>所属平台 <span class="required">*</span></label>
+                            <select id="platformSelect">
+                                <option value="">请选择外卖平台</option>
+                                <option value="meituan">美团众包</option>
+                                <option value="eleme">蜂鸟众包</option>
+                                <option value="dada">达达骑士</option>
+                                <option value="sf">顺丰同城</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>问题类型</label>
+                            <input type="text" id="problemType" readonly value="商家出餐延误">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>发生日期 <span class="required">*</span></label>
+                                <input type="date" id="eventDate" value="2026-10-20">
+                            </div>
+                            <div class="form-group">
+                                <label>订单号</label>
+                                <input type="text" id="orderNo" placeholder="示例：202610201234567" value="202610201234567">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>事件经过 <span class="required">*</span></label>
+                            <textarea id="eventDesc" placeholder="请简要描述事件经过，包括时间、地点、涉及人员等..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>已采取措施</label>
+                            <textarea id="measures" placeholder="例如：已联系商家、已在APP内报备、已联系客服..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📎 证据材料</div>
+                        <div class="card-subtitle">可上传截图或照片，演示环境仅作展示。</div>
+                        <div class="evidence-card selected" onclick="toggleEvidence(this)">
+                            <div class="checkbox">✓</div>
+                            <div class="content">
+                                <h4>订单详情截图</h4>
+                                <p>包含订单号、预计取餐时间、实际取餐时间</p>
+                            </div>
+                        </div>
+                        <div class="evidence-card" onclick="toggleEvidence(this)">
+                            <div class="checkbox"></div>
+                            <div class="content">
+                                <h4>与商家沟通记录</h4>
+                                <p>催餐、报备出餐延误的聊天或通话记录</p>
+                            </div>
+                        </div>
+                        <div class="evidence-card" onclick="toggleEvidence(this)">
+                            <div class="checkbox"></div>
+                            <div class="content">
+                                <h4>到店/取餐时间截图</h4>
+                                <p>APP内显示的到店、取餐时间记录</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-actions">
+                        <button class="btn btn-outline" onclick="navigateTo('home')">返回首页</button>
+                        <button class="btn btn-primary" onclick="goToRule()">查看对应规则</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 规则解读 -->
+            <section class="page" id="page-rule">
+                <div class="page-content">
+                    <div class="progress-bar">
+                        <div class="progress-step active"><div class="dot">1</div><div class="label">选问题</div></div>
+                        <div class="progress-step active"><div class="dot">2</div><div class="label">填情况</div></div>
+                        <div class="progress-step active"><div class="dot">3</div><div class="label">看规则</div></div>
+                        <div class="progress-step"><div class="dot">4</div><div class="label">备证据</div></div>
+                        <div class="progress-step"><div class="dot">5</div><div class="label">出初稿</div></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📖 规则原文</div>
+                        <div class="rule-original">
+                            <h4>平台规则（示例）</h4>
+                            <p id="ruleOriginal">因商家原因导致订单出餐延误，骑手应在到店后及时通过APP进行「商家出餐慢」报备，系统将根据报备时间、商家实际出餐时间等信息进行综合判定。经核实确属商家责任的，不对骑手进行超时处罚。</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">💡 大白话解读</div>
+                        <div class="rule-section">
+                            <p id="ruleExplain">如果商家做饭慢了导致你取餐晚、最终订单超时，只要你在APP里及时点了"商家出餐慢"报备，并且平台核实确实是商家的责任，就不应该扣你的钱或影响你的评分。</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">✅ 适用条件</div>
+                        <div class="rule-section">
+                            <ul id="ruleConditions">
+                                <li>到店后已在APP内进行"商家出餐慢"报备</li>
+                                <li>报备时间与实际等待时间能够相互印证</li>
+                                <li>订单确实存在因商家出餐慢导致的超时</li>
+                                <li>能提供订单时间截图或商家沟通记录作为佐证</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">ℹ️ 信息来源</div>
+                        <div class="rule-section">
+                            <p id="ruleSource">来源：平台公开骑手规则中心 / 帮助文档</p>
+                        </div>
+                        <div class="rule-meta">
+                            <span>📅 更新时间：<span id="ruleUpdate">2026-09-15</span></span>
+                            <span>🏷️ 类型：<span id="ruleCategory">商家出餐延误</span></span>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        规则可能随时调整，请以平台最新公示规则和实际订单情况为准。
+                    </div>
+
+                    <div class="bottom-actions">
+                        <button class="btn btn-outline" onclick="navigateTo('form')">返回修改</button>
+                        <button class="btn btn-primary" onclick="navigateTo('evidence')">检查证据</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. 证据清单 -->
+            <section class="page" id="page-evidence">
+                <div class="page-content">
+                    <div class="progress-bar">
+                        <div class="progress-step active"><div class="dot">1</div><div class="label">选问题</div></div>
+                        <div class="progress-step active"><div class="dot">2</div><div class="label">填情况</div></div>
+                        <div class="progress-step active"><div class="dot">3</div><div class="label">看规则</div></div>
+                        <div class="progress-step active"><div class="dot">4</div><div class="label">备证据</div></div>
+                        <div class="progress-step"><div class="dot">5</div><div class="label">出初稿</div></div>
+                    </div>
+
+                    <div class="tip-box">
+                        请根据清单准备申诉材料。勾选已准备好的项目，系统将在申诉初稿中引用已勾选内容。
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📋 必备证据清单</div>
+                        <div class="card-subtitle">已准备 <strong id="evidenceCount">1/4</strong> 项</div>
+
+                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
+                            <div class="checkbox"></div>
+                            <div class="content">
+                                <h4>到店时间截图</h4>
+                                <p>APP内显示到达商家的时间，证明骑手按时到店。</p>
+                            </div>
+                        </div>
+                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
+                            <div class="checkbox"></div>
+                            <div class="content">
+                                <h4>「商家出餐慢」报备记录</h4>
+                                <p>在APP内提交的报备截图，需包含提交时间。</p>
+                            </div>
+                        </div>
+                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
+                            <div class="checkbox"></div>
+                            <div class="content">
+                                <h4>实际取餐时间截图</h4>
+                                <p>显示最终取餐时间，证明等待时长超出合理范围。</p>
+                            </div>
+                        </div>
+                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
+                            <div class="checkbox"></div>
+                            <div class="content">
+                                <h4>与商家沟通记录（如有）</h4>
+                                <p>催餐、协商取餐时间的聊天记录或通话记录。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">💡 补充建议</div>
+                        <div class="rule-section">
+                            <ul>
+                                <li>截图尽量完整，包含时间、订单号、商家名称等关键信息</li>
+                                <li>如果当时忘记报备，可说明原因并提供其他可佐证材料</li>
+                                <li>文字描述应客观、具体，避免情绪化表达</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bottom-actions">
+                        <button class="btn btn-outline" onclick="navigateTo('rule')">返回规则</button>
+                        <button class="btn btn-primary" onclick="navigateTo('draft')">生成申诉初稿</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. 申诉初稿 -->
+            <section class="page" id="page-draft">
+                <div class="page-content">
+                    <div class="progress-bar">
+                        <div class="progress-step active"><div class="dot">1</div><div class="label">选问题</div></div>
+                        <div class="progress-step active"><div class="dot">2</div><div class="label">填情况</div></div>
+                        <div class="progress-step active"><div class="dot">3</div><div class="label">看规则</div></div>
+                        <div class="progress-step active"><div class="dot">4</div><div class="label">备证据</div></div>
+                        <div class="progress-step active"><div class="dot">5</div><div class="label">出初稿</div></div>
+                    </div>
+
+                    <div class="tip-box">
+                        以下是根据你填写的情况和证据生成的申诉初稿，可直接复制到平台申诉入口，或根据实际情况编辑后使用。
+                    </div>
+
+                    <div class="draft-box" id="draftBox">
+                        <h3>申诉说明</h3>
+                        <div class="section">
+                            <div class="section-title">一、事实经过</div>
+                            <div class="section-content" id="draftFact"></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">二、证据材料</div>
+                            <div class="section-content" id="draftEvidence"></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">三、规则依据</div>
+                            <div class="section-content" id="draftRule"></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">四、具体诉求</div>
+                            <div class="section-content" id="draftRequest"></div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-outline" onclick="toggleEdit()" id="editBtn">编辑文本</button>
+                        <button class="btn btn-primary" onclick="copyDraft()">复制文本</button>
+                        <button class="btn btn-outline" onclick="navigateTo('evidence')">返回修改</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. 规则库与案例库 -->
+            <section class="page" id="page-library">
+                <div class="page-content">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="rules" onclick="switchLibraryTab('rules')">规则库</div>
+                        <div class="tab" data-tab="cases" onclick="switchLibraryTab('cases')">案例库</div>
+                    </div>
+
+                    <!-- 规则库 -->
+                    <div id="library-rules">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" placeholder="搜索规则关键词，如：出餐、超时、扣款..." onkeyup="searchRules(this.value)">
+                        </div>
+                        <div class="category-list">
+                            <div class="category-item active" onclick="filterRules('all', this)">全部</div>
+                            <div class="category-item" onclick="filterRules('merchant', this)">商家出餐</div>
+                            <div class="category-item" onclick="filterRules('navigation', this)">导航定位</div>
+                            <div class="category-item" onclick="filterRules('time', this)">配送时间</div>
+                            <div class="category-item" onclick="filterRules('income', this)">收入计价</div>
+                        </div>
+                        <div id="ruleList">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 案例库 -->
+                    <div id="library-cases" style="display: none;">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" placeholder="搜索案例关键词..." onkeyup="searchCases(this.value)">
+                        </div>
+                        <div id="caseList">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. 我的 -->
+            <section class="page" id="page-profile">
+                <div class="profile-header">
+                    <div class="avatar">👤</div>
+                    <h2>骑手用户</h2>
+                    <p>演示账号 · 数据仅本地展示</p>
+                </div>
+
+                <div class="page-content" style="padding-top: 0;">
+                    <div class="menu-list">
+                        <div class="menu-item" onclick="showToast('草稿箱功能演示')">
+                            <div class="left">
+                                <div class="icon" style="background: #eff6ff;">📝</div>
+                                <div class="text">已保存草稿</div>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="menu-item" onclick="showToast('历史申诉功能演示')">
+                            <div class="left">
+                                <div class="icon" style="background: #ecfdf5;">📄</div>
+                                <div class="text">历史申诉</div>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                    </div>
+
+                    <div class="menu-list">
+                        <div class="menu-item" onclick="showToast('使用说明功能演示')">
+                            <div class="left">
+                                <div class="icon" style="background: #fff3e0;">📖</div>
+                                <div class="text">使用说明</div>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="menu-item" onclick="showToast('意见反馈功能演示')">
+                            <div class="left">
+                                <div class="icon" style="background: #f3e8ff;">💬</div>
+                                <div class="text">意见反馈</div>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="menu-item" onclick="showToast('隐私说明功能演示')">
+                            <div class="left">
+                                <div class="icon" style="background: #eff6ff;">🔒</div>
+                                <div class="text">隐私说明</div>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-title">📌 关于本产品</div>
+                        <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.7;">
+                            「骑开得胜」是面向外卖骑手的算法规则解读与申诉辅助工具，帮助骑手理解平台规则、整理申诉材料、生成申诉文本。本产品目前为竞赛演示原型，不涉及真实订单数据接入。
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav" id="bottomNav">
+            <div class="bottom-nav-item active" data-page="home" onclick="navigateTo('home')">
+                <div class="icon">🏠</div>
+                <div class="label">首页</div>
+            </div>
+            <div class="bottom-nav-item" data-page="library" onclick="navigateTo('library', {tab:'rules'})">
+                <div class="icon">📚</div>
+                <div class="label">规则/案例</div>
+            </div>
+            <div class="bottom-nav-item" data-page="profile" onclick="navigateTo('profile')">
+                <div class="icon">👤</div>
+                <div class="label">我的</div>
+            </div>
+        </nav>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+
+        <!-- 案例详情弹窗 -->
+        <div class="modal" id="caseModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">案例详情</h3>
+                    <div class="close" onclick="closeModal()">×</div>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- 动态内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
