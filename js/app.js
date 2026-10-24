@@ -248,12 +248,12 @@ function updateHeader(page) {
     const backBtn = document.getElementById('backBtn');
     const rightAction = document.getElementById('rightAction');
 
-    if (page === 'home' || page === 'profile') {
+    if (page === 'home') {
         header.style.display = 'none';
     } else {
         header.style.display = 'flex';
         title.textContent = pageTitles[page] || '';
-        backBtn.style.visibility = page === 'home' ? 'hidden' : 'visible';
+        backBtn.style.visibility = 'visible';
         rightAction.textContent = '';
     }
 }

@@ -121,12 +121,22 @@ html, body {
 }
 
 /* 页面内容区 */
-.page {
-    display: none;
+.page-content-area {
     flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    display: none;
     animation: fadeIn 0.25s ease;
 }
 
