@@ -133,15 +133,14 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     display: none;
+    flex-direction: column;
     animation: fadeIn 0.25s ease;
 }
 
 .page.active {
-    display: block;
+    display: flex;
 }
 
 @keyframes fadeIn {
@@ -150,8 +149,16 @@ html, body {
 }
 
 .page-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     padding: 16px;
-    padding-bottom: 90px;
+}
+
+/* 首页内容区域不需要额外内边距 */
+#page-home .page-content {
+    padding-top: 0;
 }
 
 /* 首页特殊样式 */
@@ -723,10 +730,7 @@ html, body {
 
 /* 底部固定按钮 */
 .bottom-actions {
-    position: absolute;
-    bottom: 64px;
-    left: 0;
-    right: 0;
+    flex-shrink: 0;
     padding: 12px 16px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -734,6 +738,7 @@ html, body {
     display: flex;
     gap: 12px;
     z-index: 98;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
 .bottom-actions .btn {
