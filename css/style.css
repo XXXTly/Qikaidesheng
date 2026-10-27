@@ -161,6 +161,21 @@ html, body {
     padding-top: 0;
 }
 
+/* 首页整体滚动：整个页面一起滚动，不只是 page-content */
+#page-home {
+    overflow-y: auto;
+    padding-bottom: 80px;
+}
+
+#page-home.active {
+    display: block;
+}
+
+#page-home .page-content {
+    flex: none;
+    overflow: visible;
+}
+
 /* 首页特殊样式 */
 .home-header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
