@@ -5,9 +5,11 @@ const state = {
     currentPage: 'home',
     pageHistory: [],
     problemType: 'merchant',
-    platform: 'meituan',
+    platform: 'eleme',
     editingDraft: false,
-    draftText: ''
+    draftText: '',
+    currentRulePlatform: 'eleme',
+    currentCasePlatform: 'eleme'
 };
 
 // 页面标题映射
@@ -45,7 +47,7 @@ const problemConfig = {
         ]
     },
     merchant: {
-        title: '商家出餐延误',
+        title: '商家出餐慢',
         icon: '🍜',
         ruleOriginal: '因商家原因导致订单出餐延误，骑手应在到店后及时通过APP进行「商家出餐慢」报备，系统将根据报备时间、商家实际出餐时间等信息进行综合判定。经核实确属商家责任的，不对骑手进行超时处罚。',
         explain: '如果商家做饭慢了导致你取餐晚、最终订单超时，只要你在APP里及时点了"商家出餐慢"报备，并且平台核实确实是商家的责任，就不应该扣你的钱或影响你的评分。',
@@ -55,13 +57,73 @@ const problemConfig = {
             '订单确实存在因商家出餐慢导致的超时',
             '能提供订单时间截图或商家沟通记录作为佐证'
         ],
-        source: '平台公开骑手规则中心 / 帮助文档',
-        category: '商家出餐延误',
+        source: '蜂鸟众包公开骑手规则中心 / 帮助文档',
+        category: '商家出餐慢',
         evidence: [
             { title: '到店时间截图', desc: 'APP内显示到达商家的时间，证明骑手按时到店' },
             { title: '「商家出餐慢」报备记录', desc: '在APP内提交的报备截图，需包含提交时间' },
             { title: '实际取餐时间截图', desc: '显示最终取餐时间，证明等待时长超出合理范围' },
             { title: '与商家沟通记录（如有）', desc: '催餐、协商取餐时间的聊天记录或通话记录' }
+        ]
+    },
+    customer_location: {
+        title: '顾客定位不准',
+        icon: '📍',
+        ruleOriginal: '因顾客在APP中填写的收货定位与实际地址存在明显偏差，导致骑手无法按系统定位完成配送并产生超时的，骑手可提交定位截图、实际地址照片、与顾客沟通记录等材料进行申诉。经核实确属顾客定位错误的，不对骑手进行超时处罚。',
+        explain: '如果顾客填的定位不对，把你导航到错误地方，导致送餐绕路或超时，你可以把顾客定位截图、实际门牌照片和聊天记录作为证据申诉。核实是顾客定位问题，就不该处罚你。',
+        conditions: [
+            '顾客APP定位与实际收货地址存在明显偏差',
+            '保留平台导航显示的顾客定位截图',
+            '拍摄实际收货地址门牌或周边环境照片',
+            '能提供与顾客确认地址的沟通记录'
+        ],
+        source: '蜂鸟众包公开骑手规则中心 / 帮助文档',
+        category: '顾客定位不准',
+        evidence: [
+            { title: '顾客定位截图', desc: 'APP内显示的顾客收货定位及地址信息' },
+            { title: '实际地址照片', desc: '收货地点门牌号、楼栋号等可证明实际位置的照片' },
+            { title: '与顾客沟通记录', desc: '电话录音、APP消息等确认实际地址的记录' },
+            { title: '实际行驶路线截图', desc: '证明因定位偏差导致绕路的导航或轨迹截图' }
+        ]
+    },
+    unreachable_customer: {
+        title: '联系不上顾客',
+        icon: '📞',
+        ruleOriginal: '骑手已按订单地址到达配送地点，并通过APP内置通话、短信等方式多次联系顾客均无法取得联系，导致无法完成交付的，应在APP内进行「联系不上顾客」报备，并按规则流程处理。经核实确属无法联系顾客的，不对骑手进行超时或差评处罚。',
+        explain: '如果你已经到了顾客地址，但打电话、发消息都联系不上人，只要在APP里按规定报备"联系不上顾客"，并按流程处理，就不该因为超时或被差评扣你的钱。',
+        conditions: [
+            '已按订单地址到达配送地点',
+            '通过APP或电话多次联系顾客均无回应',
+            '已在APP内进行「联系不上顾客」报备',
+            '按平台要求等待或放置餐品，保留现场照片'
+        ],
+        source: '蜂鸟众包公开骑手规则中心 / 帮助文档',
+        category: '联系不上顾客',
+        evidence: [
+            { title: '通话记录截图', desc: '显示多次拨打顾客电话但未接通的记录' },
+            { title: 'APP消息截图', desc: '通过APP联系顾客但无回复的消息记录' },
+            { title: '「联系不上顾客」报备截图', desc: '在APP内完成报备的时间及内容' },
+            { title: '现场照片', desc: '到达地址后的现场照片，含时间水印更佳' }
+        ]
+    },
+    merchant_location: {
+        title: '商户定位不准',
+        icon: '🏪',
+        ruleOriginal: '因平台地图中标注的商户位置与实际门店位置存在偏差，导致骑手到店时间、取餐时间受到影响的，骑手可提交平台商户定位截图、实际门店位置照片、订单时间截图等材料进行申诉。经核实确属商户定位错误的，不对骑手进行超时处罚。',
+        explain: '如果平台地图上标的店位置不对，让你找错地方、绕路或到店晚了，你可以把平台定位截图、实际门店照片和订单时间截图作为证据申诉。核实是平台定位问题，就不该处罚你。',
+        conditions: [
+            '平台标注的商户位置与实际门店位置存在偏差',
+            '保留APP内商户定位截图和实际门店照片',
+            '订单时间能反映因找店导致的延误',
+            '能提供与商家或客服的沟通记录（如有）'
+        ],
+        source: '蜂鸟众包公开骑手规则中心 / 帮助文档',
+        category: '商户定位不准',
+        evidence: [
+            { title: '平台商户定位截图', desc: 'APP内显示的商家位置及导航路线' },
+            { title: '实际门店照片', desc: '商家实际门头、门牌号及周边环境照片' },
+            { title: '订单时间截图', desc: '到店、取餐时间，证明因找店导致延误' },
+            { title: '与商家沟通记录', desc: '询问具体位置、绕路取餐的聊天记录或通话' }
         ]
     },
     time: {
@@ -106,66 +168,70 @@ const problemConfig = {
     }
 };
 
-// 规则库数据
+// 规则库数据（比赛阶段仅维护蜂鸟众包平台数据，其余平台显示空白）
 const rulesData = [
-    { id: 1, category: 'merchant', title: '商家出餐慢如何报备？', desc: '到店后如发现商家未按时出餐，应在APP内点击「商家出餐慢」进行报备，系统将记录到店时间和报备时间。' },
-    { id: 2, category: 'merchant', title: '报备后仍被判定超时怎么办？', desc: '可在订单详情页提交申诉，附上订单时间截图、报备截图和商家沟通记录。' },
-    { id: 3, category: 'navigation', title: '导航定位偏差导致超时', desc: '保留平台导航截图与实际行驶路线，证明因系统导航问题导致绕路或定位错误。' },
-    { id: 4, category: 'navigation', title: '推荐路线不合理怎么办？', desc: '如系统推荐路线存在明显绕行，可在申诉中说明并上传实际行驶轨迹。' },
-    { id: 5, category: 'time', title: '恶劣天气是否可以免责？', desc: '暴雨、大雪、台风等极端天气期间，平台通常会启动特殊配送政策，骑手可申请复核。' },
-    { id: 6, category: 'time', title: '交通管制导致超时如何申诉？', desc: '提供交通管制通告、现场照片、订单时间截图，证明超时与管制直接相关。' },
-    { id: 7, category: 'time', title: '电梯故障或小区封控', desc: '保留物业通知、现场视频等证据，说明无法进入楼宇或小区的客观情况。' },
-    { id: 8, category: 'income', title: '配送费计算有疑问', desc: '核对订单详情中的基础配送费、距离补贴、时段补贴是否与公示规则一致。' },
-    { id: 9, category: 'income', title: '活动奖励未发放', desc: '确认已完成活动要求，并保留报名截图、任务完成截图等证据进行申诉。' },
-    { id: 10, category: 'income', title: '违规扣款如何复核？', desc: '查看扣款原因对应的规则条款，如认为扣款不当可提交相关证据申诉。' }
+    { id: 1, platform: 'eleme', category: 'merchant', title: '商家出餐慢如何报备？', desc: '到店后如发现商家未按时出餐，应在APP内点击「商家出餐慢」进行报备，系统将记录到店时间和报备时间。' },
+    { id: 2, platform: 'eleme', category: 'merchant', title: '报备后仍被判定超时怎么办？', desc: '可在订单详情页提交申诉，附上订单时间截图、报备截图和商家沟通记录。' },
+    { id: 3, platform: 'eleme', category: 'merchant', title: '没有报备能否申诉？', desc: '如当时因操作原因未报备，可提供到店时间、实际取餐时间等截图，说明未报备的合理原因。' },
+    { id: 4, platform: 'eleme', category: 'customer_location', title: '顾客定位不准如何申诉？', desc: '保留顾客APP定位截图、实际收货地址照片及与顾客沟通确认地址的记录。' },
+    { id: 5, platform: 'eleme', category: 'customer_location', title: '顾客定位与地址不符怎么办？', desc: '当系统导航定位与顾客填写的具体门牌地址不一致时，以实际地址为准并保留证据。' },
+    { id: 6, platform: 'eleme', category: 'unreachable_customer', title: '联系不上顾客如何报备？', desc: '到达配送地址后，通过APP内按钮进行「联系不上顾客」报备，并按提示等待或处理餐品。' },
+    { id: 7, platform: 'eleme', category: 'unreachable_customer', title: '多次联系顾客无回应怎么办？', desc: '保留通话记录、APP消息截图，证明已多次尝试联系顾客但未成功。' },
+    { id: 8, platform: 'eleme', category: 'merchant_location', title: '商户定位不准导致绕路如何申诉？', desc: '保留APP内商户定位截图与实际门店照片，证明平台标注位置与实际位置存在偏差。' },
+    { id: 9, platform: 'eleme', category: 'merchant_location', title: '找不到商家门店怎么办？', desc: '先与商家电话确认实际位置，保存通话记录，同时拍摄实际门店门头照片。' }
 ];
 
-// 案例库数据
+// 案例库数据（比赛阶段仅维护蜂鸟众包平台数据，其余平台显示空白）
 const casesData = [
     {
         id: 1,
+        platform: 'eleme',
         title: '商家出餐慢导致超时，申诉成功免除处罚',
         category: 'merchant',
-        tags: ['商家出餐慢', '申诉成功'],
+        tags: ['蜂鸟众包', '商家出餐慢', '申诉成功'],
         summary: '骑手小王到店后商家迟迟不出餐，小王及时在APP内报备「商家出餐慢」，并保留了订单时间截图。订单超时后，小王提交申诉，平台核实后撤销了超时处罚。',
         result: '申诉成功',
         detail: '【事实经过】2026年9月12日午高峰，骑手小王接到某奶茶店订单，系统预计取餐时间为12:05。小王于12:02到店，但商家直至12:18才完成出餐，导致订单最终超时8分钟。\n\n【采取措施】小王在到店后5分钟（12:07）于APP内点击「商家出餐慢」报备，并截图保存了预计取餐时间和实际取餐时间。\n\n【申诉结果】小王在订单详情页提交申诉，上传了报备截图、订单时间截图。平台复核后认定超时系商家出餐慢导致，撤销了该订单的超时扣款。\n\n【经验提示】遇到商家出餐慢，务必第一时间在APP内报备，并保存相关时间截图。'
     },
     {
         id: 2,
-        title: '暴雨天气导致多订单超时，批量申诉获免责',
-        category: 'time',
-        tags: ['恶劣天气', '批量申诉'],
-        summary: '台风天配送途中遇到道路积水，骑手小李多个订单超时。小李拍摄了现场照片并保留了天气预警截图，批量提交申诉后均获免责。',
+        platform: 'eleme',
+        title: '顾客定位不准导致绕路，申诉撤销超时处罚',
+        category: 'customer_location',
+        tags: ['蜂鸟众包', '顾客定位不准', '申诉成功'],
+        summary: '骑手小张按照平台导航前往顾客定位，却发现定位与顾客实际住址相差一条街，导致绕行和超时。小张截取定位截图并拍摄实际门牌后申诉成功。',
         result: '申诉成功',
-        detail: '【事实经过】2026年8月15日，当地气象台发布暴雨橙色预警。骑手小李在配送途中遇到多处道路积水、视线受阻，导致3个订单超时。\n\n【采取措施】小李在等红灯时拍摄了道路积水照片，并保存了气象台发布的暴雨预警截图。配送结束后，逐一在订单详情页提交申诉。\n\n【申诉结果】平台核实当日确有暴雨预警，且小李提供的现场照片与订单时间吻合，3个订单的超时处罚全部撤销。\n\n【经验提示】恶劣天气下注意人身安全，同时保留天气预警和现场照片，便于事后申诉。'
+        detail: '【事实经过】2026年10月3日，骑手小张配送一单至某新小区，平台导航将目的地定位在小区东侧，而顾客实际门牌号位于小区西侧，导致小张绕行了约600米并超时5分钟。\n\n【采取措施】小张发现定位偏差后，截图保存了APP内顾客定位、推荐路线，并拍摄了小区实际门牌照片，同时通过APP消息与顾客确认正确地址。\n\n【申诉结果】平台比对订单地址、定位记录和实际照片后，认定存在顾客定位偏差，撤销了超时处罚。\n\n【经验提示】遇到顾客定位明显不准时，及时截图保存APP定位与推荐路线，并拍摄实际地址照片，必要时通过APP消息与顾客确认。'
     },
     {
         id: 3,
-        title: '导航定位偏差，申诉撤销超时处罚',
-        category: 'navigation',
-        tags: ['导航偏差', '定位错误'],
-        summary: '骑手小张按照平台导航前往送餐地址，却被导航到错误位置，导致绕行和超时。小张截取导航路线和实际路线后申诉成功。',
+        platform: 'eleme',
+        title: '联系不上顾客，报备后申诉免责',
+        category: 'unreachable_customer',
+        tags: ['蜂鸟众包', '联系不上顾客', '申诉成功'],
+        summary: '骑手小李到达配送地址后多次拨打顾客电话无人接听，在APP报备「联系不上顾客」并按规定等待后完成处理。订单超时后，小李申诉成功。',
         result: '申诉成功',
-        detail: '【事实经过】2026年10月3日，骑手小张配送一单至某新小区，平台导航将目的地定位在小区东侧，而实际门牌号位于小区西侧，导致小张绕行了约800米。\n\n【采取措施】小张发现导航偏差后，截图保存了平台推荐路线和实际行驶路线（使用第三方地图记录），并拍摄了小区门牌照片。\n\n【申诉结果】平台比对订单地址、导航记录和实际路线后，认定存在定位偏差，撤销了超时处罚。\n\n【经验提示】遇到导航明显偏差时，及时截图保存平台推荐路线，并用其他地图记录实际行驶轨迹。'
+        detail: '【事实经过】2026年10月8日晚高峰，骑手小李将餐品送至订单地址楼下，连续拨打顾客电话3次均无人接听，APP内消息也未获回复，导致无法按时完成交付。\n\n【采取措施】小李在APP内点击「联系不上顾客」报备，按系统提示等待5分钟并拍摄现场照片，随后将餐品暂存至小区门卫处并通过APP留言告知顾客。\n\n【申诉结果】平台核实小李确实多次联系顾客未果，且已按规则完成报备和等待流程，撤销了该订单的超时处罚。\n\n【经验提示】联系不上顾客时，务必在APP内完成报备并保留通话记录、现场照片，按平台提示流程处理。'
     },
     {
         id: 4,
-        title: '活动奖励未到账，申诉后补发',
-        category: 'income',
-        tags: ['收入争议', '奖励补发'],
-        summary: '骑手小陈参加了平台的「午高峰冲单奖」活动并完成了任务，但奖励未到账。小陈提交活动报名截图和任务完成截图后，平台补发了奖励。',
+        platform: 'eleme',
+        title: '商户定位不准导致取餐延误，申诉成功',
+        category: 'merchant_location',
+        tags: ['蜂鸟众包', '商户定位不准', '申诉成功'],
+        summary: '骑手小陈按平台地图前往取餐，却发现标注位置与实际门店不符，找店花费了较长时间。小陈提交定位截图和门店照片后，申诉撤销超时处罚。',
         result: '申诉成功',
-        detail: '【事实经过】2026年10月1日至7日，平台推出「午高峰冲单奖」活动，要求午高峰时段完成20单奖励100元。小陈完成了23单，但奖励未在承诺时间内到账。\n\n【采取措施】小陈保留了活动报名截图、每日午高峰完成单量截图，以及收入明细截图，通过客服渠道提交申诉。\n\n【申诉结果】平台核实小陈符合奖励条件后，补发了100元活动奖励。\n\n【经验提示】参与活动前截图保存活动规则，完成后保存任务完成截图，便于维权。'
+        detail: '【事实经过】2026年10月10日午高峰，骑手小陈接到某快餐店订单，平台地图将商家标注在商业街A区，但实际门店位于B区，小陈找店多花约10分钟，导致订单超时。\n\n【采取措施】小陈到达实际门店后，截图保存了APP内商户定位页面，并拍摄门店门头照片，同时记录了订单中的到店和取餐时间。\n\n【申诉结果】平台核实该商户确实存在定位偏差，且小陈到店时间正常，因找店导致的超时不应由骑手承担，撤销了超时处罚。\n\n【经验提示】发现商户定位不准时，及时截图保存APP定位页面，并拍摄实际门店照片，保留订单时间记录。'
     },
     {
         id: 5,
-        title: '小区临时封控导致无法进入，申诉免责',
-        category: 'time',
-        tags: ['小区封控', '无法进入'],
-        summary: '骑手小赵到达小区门口后，因临时防疫封控无法进入楼宇，与顾客沟通后放在门口。订单超时后，小赵提供封控通知申诉成功。',
+        platform: 'eleme',
+        title: '顾客定位偏差且电话不通，综合申诉成功',
+        category: 'customer_location',
+        tags: ['蜂鸟众包', '顾客定位不准', '申诉成功'],
+        summary: '骑手小赵遇到顾客定位不准且电话联系不上的情况，通过保存定位截图、通话记录和现场照片，最终申诉成功。',
         result: '申诉成功',
-        detail: '【事实经过】2026年10月8日，骑手小赵配送一单至某小区，到达后发现小区门口张贴临时封控通知，非本小区人员不得进入。\n\n【采取措施】小赵拍摄了封控通知照片，并通过APP联系顾客说明情况，在小区门口完成交付。订单超时后，提交申诉。\n\n【申诉结果】平台核实封控情况属实，且小赵已与顾客沟通达成一致，撤销了超时处罚。\n\n【经验提示】遇到小区、写字楼临时管控，及时拍照留存通知，并与顾客沟通确认交付方式。'
+        detail: '【事实经过】2026年10月12日，骑手小赵配送一单至某写字楼，平台定位显示为写字楼北门，实际顾客所在公司为南门，且顾客电话多次无人接听，导致订单超时。\n\n【采取措施】小赵截图保存了顾客定位与推荐路线，拨打了3次电话并保留通话记录，拍摄了写字楼南门现场照片，后通过APP客服渠道说明情况。\n\n【申诉结果】平台综合定位偏差和联系不上顾客的情况，认定骑手已尽力完成配送，撤销了超时处罚。\n\n【经验提示】复杂情况要保留多种证据，包括定位截图、通话记录和现场照片，便于平台综合判断。'
     }
 ];
 
@@ -291,13 +357,25 @@ function fillFormData() {
     document.getElementById('platformSelect').value = state.platform;
 
     const examples = {
-        navigation: {
-            desc: '2026年10月20日11:30，我按照平台导航前往XX小区送餐，但导航将目的地定位在小区东门，实际地址位于西门。按照导航路线骑行导致绕路约600米，订单最终超时5分钟。',
-            measures: '已截图保存平台推荐路线和实际行驶路线，订单详情中显示的到店、送达时间也可作为佐证。'
-        },
         merchant: {
             desc: '2026年10月20日12:05，我到达商家XX奶茶店，系统预计取餐时间为12:08，但商家直至12:22才完成出餐。我在12:10已通过APP进行「商家出餐慢」报备，订单最终超时10分钟。',
             measures: '已在APP内报备「商家出餐慢」，并保存了订单时间截图、报备截图和与商家店员的沟通记录。'
+        },
+        customer_location: {
+            desc: '2026年10月20日11:45，我按照APP中顾客定位前往XX小区东门，但顾客实际地址位于小区西门8号楼。按定位配送导致绕路约600米，订单最终超时6分钟。',
+            measures: '已截图保存顾客APP定位页面、平台推荐路线，并拍摄了实际收货地址门牌照片，同时保存了与顾客确认地址的APP消息记录。'
+        },
+        unreachable_customer: {
+            desc: '2026年10月20日19:20，我按订单地址到达XX小区3号楼楼下，连续拨打顾客电话3次均无人接听，APP内发送消息也未获回复，无法完成正常交付。',
+            measures: '已在APP内进行「联系不上顾客」报备，并按提示等待5分钟，保留了通话记录截图、APP消息截图和现场照片。'
+        },
+        merchant_location: {
+            desc: '2026年10月20日10:50，我按平台地图前往商家XX快餐店，但地图标注位置与实际门店不符，实际门店位于隔壁商业街B区，找店多花约8分钟，导致订单超时。',
+            measures: '已截图保存APP内商户定位页面和实际门店门头照片，订单详情中的到店、取餐时间也可证明因找店导致的延误。'
+        },
+        navigation: {
+            desc: '2026年10月20日11:30，我按照平台导航前往XX小区送餐，但导航将目的地定位在小区东门，实际地址位于西门。按照导航路线骑行导致绕路约600米，订单最终超时5分钟。',
+            measures: '已截图保存平台推荐路线和实际行驶路线，订单详情中显示的到店、送达时间也可作为佐证。'
         },
         time: {
             desc: '2026年10月20日18:00左右，当地突降暴雨，能见度低、路面湿滑。我在配送途中经过积水路段，为确保安全减速行驶，导致该订单超时8分钟。',
@@ -481,9 +559,9 @@ function switchLibraryTab(tab) {
 }
 
 // 渲染规则库
-function renderRules(filter = 'all', keyword = '') {
+function renderRules(filter = 'all', keyword = '', platform = state.currentRulePlatform) {
     const container = document.getElementById('ruleList');
-    let filtered = rulesData;
+    let filtered = rulesData.filter(r => r.platform === platform);
 
     if (filter !== 'all') {
         filtered = filtered.filter(r => r.category === filter);
@@ -497,6 +575,17 @@ function renderRules(filter = 'all', keyword = '') {
         );
     }
 
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>暂无该平台的规则数据</p>
+                <span>比赛阶段优先维护蜂鸟众包平台内容</span>
+            </div>
+        `;
+        return;
+    }
+
     container.innerHTML = filtered.map(rule => `
         <div class="rule-list-item" onclick="showRuleDetail(${rule.id})">
             <h4>${rule.title}</h4>
@@ -506,9 +595,9 @@ function renderRules(filter = 'all', keyword = '') {
 }
 
 // 渲染案例库
-function renderCases(keyword = '') {
+function renderCases(keyword = '', platform = state.currentCasePlatform) {
     const container = document.getElementById('caseList');
-    let filtered = casesData;
+    let filtered = casesData.filter(c => c.platform === platform);
 
     if (keyword) {
         const lower = keyword.toLowerCase();
@@ -517,6 +606,17 @@ function renderCases(keyword = '') {
             c.summary.toLowerCase().includes(lower) ||
             c.tags.some(t => t.toLowerCase().includes(lower))
         );
+    }
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>暂无该平台的案例数据</p>
+                <span>比赛阶段优先维护蜂鸟众包平台内容</span>
+            </div>
+        `;
+        return;
     }
 
     container.innerHTML = filtered.map(c => `
@@ -533,16 +633,32 @@ function renderCases(keyword = '') {
 
 // 搜索规则
 function searchRules(keyword) {
-    const activeCategory = document.querySelector('.category-item.active');
+    const activeCategory = document.querySelector('#library-rules .category-item.active');
     const category = activeCategory ? activeCategory.getAttribute('onclick').match(/'(\w+)'/)[1] : 'all';
     renderRules(category, keyword);
 }
 
 // 筛选规则分类
 function filterRules(category, element) {
-    document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll('#library-rules .category-item').forEach(item => item.classList.remove('active'));
     element.classList.add('active');
     renderRules(category);
+}
+
+// 筛选规则库平台
+function filterRulesByPlatform(platform, element) {
+    state.currentRulePlatform = platform;
+    document.querySelectorAll('#rulePlatformFilter .platform-item').forEach(item => item.classList.remove('active'));
+    element.classList.add('active');
+    renderRules();
+}
+
+// 筛选案例库平台
+function filterCasesByPlatform(platform, element) {
+    state.currentCasePlatform = platform;
+    document.querySelectorAll('#casePlatformFilter .platform-item').forEach(item => item.classList.remove('active'));
+    element.classList.add('active');
+    renderCases();
 }
 
 // 搜索案例
@@ -610,7 +726,10 @@ function showToast(message) {
 // 分类名称映射
 function getCategoryName(category) {
     const names = {
-        merchant: '商家出餐',
+        merchant: '商家出餐慢',
+        customer_location: '顾客定位不准',
+        unreachable_customer: '联系不上顾客',
+        merchant_location: '商户定位不准',
         navigation: '导航定位',
         time: '配送时间',
         income: '收入计价'

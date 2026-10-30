@@ -38,11 +38,11 @@
                     <h1 class="slogan-main">外卖骑手<br>算法规则解读与申诉辅助工具</h1>
                     <div class="stats">
                         <div class="stat-item">
-                            <div class="stat-num">12</div>
+                            <div class="stat-num">9</div>
                             <div class="stat-label">覆盖规则</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-num">36</div>
+                            <div class="stat-num">5</div>
                             <div class="stat-label">典型案例</div>
                         </div>
                         <div class="stat-item">
@@ -75,35 +75,35 @@
                         <div class="card-title">🔥 常见申诉场景</div>
                         <div class="card-subtitle">选择与你遇到的问题最匹配的类型，开始准备申诉材料。</div>
                         <div class="problem-grid" style="margin-top: 12px;">
-                            <div class="problem-item" onclick="selectProblem('navigation')">
-                                <div class="icon" style="background: #eff6ff;">🧭</div>
-                                <div class="info">
-                                    <h3>导航或定位异常</h3>
-                                    <p>定位偏差、路线规划错误导致配送异常</p>
-                                </div>
-                                <div class="arrow">›</div>
-                            </div>
                             <div class="problem-item" onclick="selectProblem('merchant')">
                                 <div class="icon" style="background: #fff3e0;">🍜</div>
                                 <div class="info">
-                                    <h3>商家出餐延误</h3>
-                                    <p>商家未按时出餐导致订单超时</p>
+                                    <h3>商家出餐慢</h3>
+                                    <p>商家未在预计时间内完成出餐，导致订单超时</p>
                                 </div>
                                 <div class="arrow">›</div>
                             </div>
-                            <div class="problem-item" onclick="selectProblem('time')">
-                                <div class="icon" style="background: #f3e8ff;">⏱️</div>
+                            <div class="problem-item" onclick="selectProblem('customer_location')">
+                                <div class="icon" style="background: #eff6ff;">📍</div>
                                 <div class="info">
-                                    <h3>配送时间争议</h3>
-                                    <p>系统判定超时但存在客观原因</p>
+                                    <h3>顾客定位不准</h3>
+                                    <p>顾客定位与实际地址存在偏差，影响正常配送</p>
                                 </div>
                                 <div class="arrow">›</div>
                             </div>
-                            <div class="problem-item" onclick="selectProblem('income')">
-                                <div class="icon" style="background: #ecfdf5;">💰</div>
+                            <div class="problem-item" onclick="selectProblem('unreachable_customer')">
+                                <div class="icon" style="background: #f3e8ff;">📞</div>
                                 <div class="info">
-                                    <h3>收入计价争议</h3>
-                                    <p>配送费、奖励、扣款存在疑问</p>
+                                    <h3>联系不上顾客</h3>
+                                    <p>配送到达后无法与顾客取得联系，无法完成交付</p>
+                                </div>
+                                <div class="arrow">›</div>
+                            </div>
+                            <div class="problem-item" onclick="selectProblem('merchant_location')">
+                                <div class="icon" style="background: #ecfdf5;">🏪</div>
+                                <div class="info">
+                                    <h3>商户定位不准</h3>
+                                    <p>平台显示的商户位置与实际位置不符，导致绕路</p>
                                 </div>
                                 <div class="arrow">›</div>
                             </div>
@@ -146,35 +146,35 @@
                     </div>
 
                     <div class="problem-grid">
-                        <div class="problem-item" onclick="selectProblem('navigation')">
-                            <div class="icon" style="background: #eff6ff;">🧭</div>
-                            <div class="info">
-                                <h3>导航或定位异常</h3>
-                                <p>平台导航定位错误、路线规划不合理，导致实际配送距离与时间超出系统预估。</p>
-                            </div>
-                            <div class="arrow">›</div>
-                        </div>
                         <div class="problem-item" onclick="selectProblem('merchant')">
                             <div class="icon" style="background: #fff3e0;">🍜</div>
                             <div class="info">
-                                <h3>商家出餐延误</h3>
+                                <h3>商家出餐慢</h3>
                                 <p>商家未在系统预计时间内完成出餐，导致骑手等待时间过长、订单最终超时。</p>
                             </div>
                             <div class="arrow">›</div>
                         </div>
-                        <div class="problem-item" onclick="selectProblem('time')">
-                            <div class="icon" style="background: #f3e8ff;">⏱️</div>
+                        <div class="problem-item" onclick="selectProblem('customer_location')">
+                            <div class="icon" style="background: #eff6ff;">📍</div>
                             <div class="info">
-                                <h3>配送时间争议</h3>
-                                <p>因天气、交通管制、电梯故障等客观因素，系统仍按常规标准判定配送超时。</p>
+                                <h3>顾客定位不准</h3>
+                                <p>顾客在APP中填写的定位与实际收货地址存在偏差，导致骑手找不到准确位置。</p>
                             </div>
                             <div class="arrow">›</div>
                         </div>
-                        <div class="problem-item" onclick="selectProblem('income')">
-                            <div class="icon" style="background: #ecfdf5;">💰</div>
+                        <div class="problem-item" onclick="selectProblem('unreachable_customer')">
+                            <div class="icon" style="background: #f3e8ff;">📞</div>
                             <div class="info">
-                                <h3>收入计价争议</h3>
-                                <p>配送费计算、活动奖励发放、违规扣款等与平台公示规则不一致。</p>
+                                <h3>联系不上顾客</h3>
+                                <p>骑手已到达配送地址，但通过电话、APP消息等方式均无法与顾客取得联系。</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="problem-item" onclick="selectProblem('merchant_location')">
+                            <div class="icon" style="background: #ecfdf5;">🏪</div>
+                            <div class="info">
+                                <h3>商户定位不准</h3>
+                                <p>平台地图中标注的商户位置与实际门店位置不符，导致骑手绕路或找不到店。</p>
                             </div>
                             <div class="arrow">›</div>
                         </div>
@@ -203,8 +203,8 @@
                             <label>所属平台 <span class="required">*</span></label>
                             <select id="platformSelect">
                                 <option value="">请选择外卖平台</option>
-                                <option value="meituan">美团众包</option>
                                 <option value="eleme">蜂鸟众包</option>
+                                <option value="meituan">美团众包</option>
                                 <option value="dada">达达骑士</option>
                                 <option value="sf">顺丰同城</option>
                             </select>
@@ -450,12 +450,18 @@
                             <span class="search-icon">🔍</span>
                             <input type="text" placeholder="搜索规则关键词，如：出餐、超时、扣款..." onkeyup="searchRules(this.value)">
                         </div>
+                        <div class="platform-filter" id="rulePlatformFilter">
+                            <div class="platform-item active" data-platform="eleme" onclick="filterRulesByPlatform('eleme', this)">蜂鸟众包</div>
+                            <div class="platform-item" data-platform="meituan" onclick="filterRulesByPlatform('meituan', this)">美团众包</div>
+                            <div class="platform-item" data-platform="dada" onclick="filterRulesByPlatform('dada', this)">达达骑士</div>
+                            <div class="platform-item" data-platform="sf" onclick="filterRulesByPlatform('sf', this)">顺丰同城</div>
+                        </div>
                         <div class="category-list">
                             <div class="category-item active" onclick="filterRules('all', this)">全部</div>
-                            <div class="category-item" onclick="filterRules('merchant', this)">商家出餐</div>
-                            <div class="category-item" onclick="filterRules('navigation', this)">导航定位</div>
-                            <div class="category-item" onclick="filterRules('time', this)">配送时间</div>
-                            <div class="category-item" onclick="filterRules('income', this)">收入计价</div>
+                            <div class="category-item" onclick="filterRules('merchant', this)">商家出餐慢</div>
+                            <div class="category-item" onclick="filterRules('customer_location', this)">顾客定位</div>
+                            <div class="category-item" onclick="filterRules('unreachable_customer', this)">联系不上顾客</div>
+                            <div class="category-item" onclick="filterRules('merchant_location', this)">商户定位</div>
                         </div>
                         <div id="ruleList">
                             <!-- 动态生成 -->
@@ -467,6 +473,12 @@
                         <div class="search-box">
                             <span class="search-icon">🔍</span>
                             <input type="text" placeholder="搜索案例关键词..." onkeyup="searchCases(this.value)">
+                        </div>
+                        <div class="platform-filter" id="casePlatformFilter">
+                            <div class="platform-item active" data-platform="eleme" onclick="filterCasesByPlatform('eleme', this)">蜂鸟众包</div>
+                            <div class="platform-item" data-platform="meituan" onclick="filterCasesByPlatform('meituan', this)">美团众包</div>
+                            <div class="platform-item" data-platform="dada" onclick="filterCasesByPlatform('dada', this)">达达骑士</div>
+                            <div class="platform-item" data-platform="sf" onclick="filterCasesByPlatform('sf', this)">顺丰同城</div>
                         </div>
                         <div id="caseList">
                             <!-- 动态生成 -->
