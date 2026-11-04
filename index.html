@@ -38,11 +38,11 @@
                     <h1 class="slogan-main">外卖骑手<br>算法规则解读与申诉辅助工具</h1>
                     <div class="stats">
                         <div class="stat-item">
-                            <div class="stat-num">9</div>
+                            <div class="stat-num">19</div>
                             <div class="stat-label">覆盖规则</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-num">5</div>
+                            <div class="stat-num">19</div>
                             <div class="stat-label">典型案例</div>
                         </div>
                         <div class="stat-item">
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="quick-actions">
-                    <div class="quick-action-card primary" onclick="navigateTo('problem')">
+                    <div class="quick-action-card primary" onclick="navigateTo('problem-all')">
                         <div class="icon">✍️</div>
                         <div class="label">我要申诉</div>
                         <div class="desc">一键生成申诉初稿</div>
@@ -75,7 +75,7 @@
                         <div class="card-title">🔥 常见申诉场景</div>
                         <div class="card-subtitle">选择与你遇到的问题最匹配的类型，开始准备申诉材料。</div>
                         <div class="problem-grid" style="margin-top: 12px;">
-                            <div class="problem-item" onclick="selectProblem('merchant')">
+                            <div class="problem-item" onclick="selectProblem('merchant_slow')">
                                 <div class="icon" style="background: #fff3e0;">🍜</div>
                                 <div class="info">
                                     <h3>商家出餐慢</h3>
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="arrow">›</div>
                             </div>
-                            <div class="problem-item" onclick="selectProblem('customer_location')">
+                            <div class="problem-item" onclick="selectProblem('customer_location_error')">
                                 <div class="icon" style="background: #eff6ff;">📍</div>
                                 <div class="info">
                                     <h3>顾客定位不准</h3>
@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="arrow">›</div>
                             </div>
-                            <div class="problem-item" onclick="selectProblem('merchant_location')">
+                            <div class="problem-item" onclick="selectProblem('merchant_location_error')">
                                 <div class="icon" style="background: #ecfdf5;">🏪</div>
                                 <div class="info">
                                     <h3>商户定位不准</h3>
@@ -138,46 +138,15 @@
                 </div>
             </section>
 
-            <!-- 2. 问题选择 -->
-            <section class="page" id="page-problem">
+            <!-- 2. 全部申诉场景选择 -->
+            <section class="page" id="page-problem-all">
                 <div class="page-content">
                     <div class="tip-box">
-                        请选择与你当前遇到的问题最匹配的类型，系统将为你匹配对应的规则和申诉模板。
+                        请选择与你当前遇到的问题最匹配的类型，系统将为你匹配对应的规则、法规和申诉模板。
                     </div>
 
-                    <div class="problem-grid">
-                        <div class="problem-item" onclick="selectProblem('merchant')">
-                            <div class="icon" style="background: #fff3e0;">🍜</div>
-                            <div class="info">
-                                <h3>商家出餐慢</h3>
-                                <p>商家未在系统预计时间内完成出餐，导致骑手等待时间过长、订单最终超时。</p>
-                            </div>
-                            <div class="arrow">›</div>
-                        </div>
-                        <div class="problem-item" onclick="selectProblem('customer_location')">
-                            <div class="icon" style="background: #eff6ff;">📍</div>
-                            <div class="info">
-                                <h3>顾客定位不准</h3>
-                                <p>顾客在APP中填写的定位与实际收货地址存在偏差，导致骑手找不到准确位置。</p>
-                            </div>
-                            <div class="arrow">›</div>
-                        </div>
-                        <div class="problem-item" onclick="selectProblem('unreachable_customer')">
-                            <div class="icon" style="background: #f3e8ff;">📞</div>
-                            <div class="info">
-                                <h3>联系不上顾客</h3>
-                                <p>骑手已到达配送地址，但通过电话、APP消息等方式均无法与顾客取得联系。</p>
-                            </div>
-                            <div class="arrow">›</div>
-                        </div>
-                        <div class="problem-item" onclick="selectProblem('merchant_location')">
-                            <div class="icon" style="background: #ecfdf5;">🏪</div>
-                            <div class="info">
-                                <h3>商户定位不准</h3>
-                                <p>平台地图中标注的商户位置与实际门店位置不符，导致骑手绕路或找不到店。</p>
-                            </div>
-                            <div class="arrow">›</div>
-                        </div>
+                    <div class="problem-grid" id="problemAllGrid">
+                        <!-- 动态生成19种场景 -->
                     </div>
                 </div>
             </section>
@@ -277,11 +246,28 @@
                         <div class="progress-step"><div class="dot">5</div><div class="label">出初稿</div></div>
                     </div>
 
+                    <!-- 法规原文：仅在存在法规冲突时显示 -->
+                    <div class="card" id="lawCard" style="display: none;">
+                        <div class="card-title">⚖️ 相关法规原文</div>
+                        <div class="rule-original law">
+                            <h4>国家层面法规依据</h4>
+                            <p id="lawOriginal"></p>
+                        </div>
+                    </div>
+
                     <div class="card">
-                        <div class="card-title">📖 规则原文</div>
+                        <div class="card-title">📖 平台规则原文</div>
                         <div class="rule-original">
-                            <h4>平台规则（示例）</h4>
-                            <p id="ruleOriginal">因商家原因导致订单出餐延误，骑手应在到店后及时通过APP进行「商家出餐慢」报备，系统将根据报备时间、商家实际出餐时间等信息进行综合判定。经核实确属商家责任的，不对骑手进行超时处罚。</p>
+                            <h4 id="ruleOriginalTitle">平台规则</h4>
+                            <p id="ruleOriginal"></p>
+                        </div>
+                    </div>
+
+                    <!-- 冲突分析：仅在存在法规冲突时显示 -->
+                    <div class="card" id="conflictCard" style="display: none;">
+                        <div class="card-title">🔍 法规与平台规则对照分析</div>
+                        <div class="rule-section">
+                            <p id="conflictAnalysis"></p>
                         </div>
                     </div>
 
@@ -341,37 +327,19 @@
                         请根据清单准备申诉材料。勾选已准备好的项目，系统将在申诉初稿中引用已勾选内容。
                     </div>
 
-                    <div class="card">
-                        <div class="card-title">📋 必备证据清单</div>
-                        <div class="card-subtitle">已准备 <strong id="evidenceCount">1/4</strong> 项</div>
+                    <div class="card" id="requiredEvidenceCard">
+                        <div class="card-title">📋 平台明确要求（必备证据）</div>
+                        <div class="card-subtitle">已准备 <strong id="requiredEvidenceCount">0/0</strong> 项</div>
+                        <div id="requiredEvidenceList">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
 
-                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
-                            <div class="checkbox"></div>
-                            <div class="content">
-                                <h4>到店时间截图</h4>
-                                <p>APP内显示到达商家的时间，证明骑手按时到店。</p>
-                            </div>
-                        </div>
-                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
-                            <div class="checkbox"></div>
-                            <div class="content">
-                                <h4>「商家出餐慢」报备记录</h4>
-                                <p>在APP内提交的报备截图，需包含提交时间。</p>
-                            </div>
-                        </div>
-                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
-                            <div class="checkbox"></div>
-                            <div class="content">
-                                <h4>实际取餐时间截图</h4>
-                                <p>显示最终取餐时间，证明等待时长超出合理范围。</p>
-                            </div>
-                        </div>
-                        <div class="evidence-card" onclick="toggleEvidence(this, true)">
-                            <div class="checkbox"></div>
-                            <div class="content">
-                                <h4>与商家沟通记录（如有）</h4>
-                                <p>催餐、协商取餐时间的聊天记录或通话记录。</p>
-                            </div>
+                    <div class="card" id="optionalEvidenceCard">
+                        <div class="card-title">📎 建议补充（可选证据）</div>
+                        <div class="card-subtitle">已准备 <strong id="optionalEvidenceCount">0/0</strong> 项，可根据实际情况勾选</div>
+                        <div id="optionalEvidenceList">
+                            <!-- 动态生成 -->
                         </div>
                     </div>
 
@@ -410,21 +378,25 @@
 
                     <div class="draft-box" id="draftBox">
                         <h3>申诉说明</h3>
-                        <div class="section">
-                            <div class="section-title">一、事实经过</div>
-                            <div class="section-content" id="draftFact"></div>
+                        <div class="section" id="draftLawSection">
+                            <div class="section-title">一、国家法规依据</div>
+                            <div class="section-content" id="draftLaw"></div>
                         </div>
                         <div class="section">
-                            <div class="section-title">二、证据材料</div>
-                            <div class="section-content" id="draftEvidence"></div>
-                        </div>
-                        <div class="section">
-                            <div class="section-title">三、规则依据</div>
+                            <div class="section-title">二、平台规则依据</div>
                             <div class="section-content" id="draftRule"></div>
                         </div>
                         <div class="section">
-                            <div class="section-title">四、具体诉求</div>
-                            <div class="section-content" id="draftRequest"></div>
+                            <div class="section-title">三、证据梳理与事实说明</div>
+                            <div class="section-content" id="draftFact"></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">四、总结与结论</div>
+                            <div class="section-content" id="draftConclusion"></div>
+                        </div>
+
+                        <div class="draft-tip" id="draftTip">
+                            如仍有疑问，请拨打劳动保护热线 12333、12351 维权。
                         </div>
                     </div>
 
@@ -458,10 +430,10 @@
                         </div>
                         <div class="category-list">
                             <div class="category-item active" onclick="filterRules('all', this)">全部</div>
-                            <div class="category-item" onclick="filterRules('merchant', this)">商家出餐慢</div>
-                            <div class="category-item" onclick="filterRules('customer_location', this)">顾客定位</div>
+                            <div class="category-item" onclick="filterRules('merchant_slow', this)">商家出餐慢</div>
+                            <div class="category-item" onclick="filterRules('customer_location_error', this)">顾客定位</div>
                             <div class="category-item" onclick="filterRules('unreachable_customer', this)">联系不上顾客</div>
-                            <div class="category-item" onclick="filterRules('merchant_location', this)">商户定位</div>
+                            <div class="category-item" onclick="filterRules('merchant_location_error', this)">商户定位</div>
                         </div>
                         <div id="ruleList">
                             <!-- 动态生成 -->
@@ -487,7 +459,20 @@
                 </div>
             </section>
 
-            <!-- 8. 我的 -->
+            <!-- 8. 申诉进度/反馈 -->
+            <section class="page" id="page-feedback">
+                <div class="page-content">
+                    <div class="tip-box">
+                        这里展示你提交过的申诉及平台处理进度，演示环境下为模拟数据。
+                    </div>
+
+                    <div id="feedbackList">
+                        <!-- 动态生成申诉进度列表 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. 我的 -->
             <section class="page" id="page-profile">
                 <div class="profile-header">
                     <div class="avatar">👤</div>
@@ -508,6 +493,13 @@
                             <div class="left">
                                 <div class="icon" style="background: #ecfdf5;">📄</div>
                                 <div class="text">历史申诉</div>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                        <div class="menu-item" onclick="navigateTo('feedback')">
+                            <div class="left">
+                                <div class="icon" style="background: #fef2f2;">🚀</div>
+                                <div class="text">申诉进度</div>
                             </div>
                             <div class="arrow">›</div>
                         </div>
@@ -580,6 +572,7 @@
         </div>
     </div>
 
+    <script src="js/data.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
